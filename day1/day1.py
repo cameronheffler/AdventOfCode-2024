@@ -16,6 +16,18 @@ def getLists():
 
     return left, right
 
+
+def sumDistances(left, right):
+    count = 0
+
+    for i in range(len(left)):
+        count += abs(left[i] - right[i])
+
+    return count
+
+
 if __name__ == '__main__':
     lList, rList = getLists()
-    print(lList, rList)
+    distances = sumDistances(lList, rList)
+
+    print(f"Part 1: {distances}")
