@@ -26,8 +26,24 @@ def sumDistances(left, right):
     return count
 
 
+def similarity(left, right):
+    count = 0
+
+    for i in range(len(left)):
+        num = left[i]
+        mult = right.count(num)
+
+        count += mult * num
+
+    return count
+
+
 if __name__ == '__main__':
     lList, rList = getLists()
     distances = sumDistances(lList, rList)
 
     print(f"Part 1: {distances}")
+
+    sim = similarity(lList, rList)
+
+    print(f"Part 2: {sim}")
