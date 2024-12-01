@@ -11,7 +11,11 @@ def getLists():
         left.append(int(splits[0]))
         right.append(int(splits[1]))
 
+    left.sort()
+    right.sort()
+
     return left, right
 
 if __name__ == '__main__':
-    print(getLists())
+    lList, rList = getLists()
+    print(lList, rList)
