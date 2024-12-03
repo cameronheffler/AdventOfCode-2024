@@ -41,10 +41,8 @@ def red_nosed_reactor():
             count += 1
 
         else:
-            for i in range(len(intList) - 1):
-                # newList = intList[:intList[i]] + intList[intList[i] + 1:]
+            for i in range(len(intList)):
                 nlist = [x for y, x in enumerate(intList) if y != i]
-                # print(nlist)
 
                 if is_safe(nlist):
                     count += 1
@@ -55,4 +53,4 @@ def red_nosed_reactor():
 
 
 if __name__ == "__main__":
-    print(f'Part 1: {red_nosed_reactor()}')
+    print(f'Part 2: {red_nosed_reactor()}')
