@@ -15,10 +15,20 @@ def decode_input(input_string):
     # use regex to find patterns of mul(<1-3 digit number>,<1-3 digit number>)
     # then multiply the two numbers and add to count
 
-    pattern = r"mul\((\d{1,3}),(\d{1,3})\)"
+    pattern = r"mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)"
+
+    disable = False
 
     for match in re.finditer(pattern, input_string):
-        count += int(match.group(1)) * int(match.group(2))
+        if match.group(1) and match.group(2):
+            if not disable:
+                count += int(match.group(1)) * int(match.group(2))
+
+        elif match.group(0) == "do()":
+            disable = False
+        
+        elif match.group(0) == "don't()":
+            disable = True
 
     return count
 
