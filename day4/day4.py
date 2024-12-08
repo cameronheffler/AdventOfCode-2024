@@ -121,6 +121,83 @@ def down(all_lines):
     return lines
 
 
+def x_mas(all_lines):
+    count = 0
+    row = 0
+
+    while row < (len(all_lines) - 2):
+        i = 0
+
+        while i < len(all_lines[0]):
+            x = row
+            y = i
+
+            one = all_lines[x][y]
+
+            if one not in ('S', 'M'):
+                i += 1  # Increment here to avoid infinite loop
+                continue
+
+            x += 1
+            y += 1
+
+            if x >= len(all_lines) or y >= len(all_lines[0]) or x < 0 or y < 0:
+                i += 1
+                continue
+
+            two = all_lines[x][y]
+
+            if two != 'A':
+                i += 1
+                continue
+
+            x += 1
+            y += 1
+
+            if x >= len(all_lines) or y >= len(all_lines[0]) or x < 0 or y < 0:
+                i += 1
+                continue
+
+            three = all_lines[x][y]
+
+            if three not in ('S', 'M') or three == one:
+                i += 1
+                continue
+
+            x -= 2
+
+            if x >= len(all_lines) or x < 0:
+                i += 1
+                continue
+
+            four = all_lines[x][y]
+
+            if four not in ('S', 'M'):
+                i += 1
+                continue
+
+            x += 2
+            y -= 2
+
+            if x >= len(all_lines) or y >= len(all_lines[0]) or x < 0 or y < 0:
+                i += 1
+                continue
+
+            five = all_lines[x][y]
+
+            if five not in ('S', 'M') or five == four:
+                i += 1
+                continue
+
+            count += 1
+            i += 1  # Ensure i increments after a successful match
+
+        row += 1
+
+    return count
+
+
+
 def count(all_lines):
     count = 0
     match = r"(?=(XMAS|SAMX))"  # Lookahead to allow overlaps
@@ -141,3 +218,4 @@ def count(all_lines):
 
 if __name__ == "__main__":
     print(f"Part 1: {count(get_input())}")
+    print(f"Part 2: {x_mas(get_input())}")
