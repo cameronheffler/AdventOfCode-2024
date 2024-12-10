@@ -18,15 +18,14 @@ def print_map(map):
 def move_guard(map, line, guard, move, dir, last):
     if move < 0 or move >= len(map) or guard < 0 or guard >= len(line):
         line[last] = "X"
-        print_map(map)
+        # print_map(map)
         return True
-
-    # print(f"guard: {guard}, move: {move}")
 
     map[move][guard] = dir
     line[last] = "X"
 
-    print_map(map)
+    # print_map(map)
+
     return False
 
 
@@ -39,8 +38,6 @@ def rotate_dir(dir, x, y):
         ndir = ">"
         ny = y + 1
         nx = x + 1
-
-        # print(f"changing x: {x}, y: {y}")
 
     if dir == ">":
         ndir = "v"
@@ -124,7 +121,6 @@ def run_route(map):
                         dir, x, y = rotate_dir(dir, x, y)
                         next = map[y][x]
 
-
             else:
                 continue
 
@@ -132,6 +128,18 @@ def run_route(map):
             i += 1
 
 
+def count(map):
+    count = 0
+
+    for line in map:
+        for char in line:
+            if char == "X":
+                count += 1
+
+    return count
+
 if __name__ == "__main__":
     map = get_input()
     run_route(map)
+
+    print(count(map))
