@@ -8,6 +8,13 @@ def get_input():
     return mapList
 
 
+def get_start(map):
+    for i in range(len(map)):
+        for j in range(len(map)):
+            if map[i][j] == "^":
+                return j, i
+
+
 def print_map(map):
     for line in map:
         print("".join(line))
@@ -15,17 +22,13 @@ def print_map(map):
     print("\n")
 
 
-def move_guard(map, line, guard, move, dir, last):
-    if move < 0 or move >= len(map) or guard < 0 or guard >= len(line):
-        line[last] = "X"
-        # print_map(map)
+def move_guard(map, guard, move, dir, last):
+    map[last[1]][last[0]] = "X"
+
+    if move < 0 or move >= len(map) or guard < 0 or guard >= len(map):
         return True
 
     map[move][guard] = dir
-    line[last] = "X"
-
-    # print_map(map)
-
     return False
 
 
@@ -58,88 +61,98 @@ def rotate_dir(dir, x, y):
 
 def run_route(map):
     outside = False
+    
+    visited = set()
+
+    x, y = get_start(map)
+    line = map[y]
+    dir = map[y][x]
 
     while not outside:
-        for i in range(len(map)):
-            line = map[i]
-            x = 0
-            y = 0
-            dir = "^"
-            last = ""
+        last = (x, y)
 
-            if "^" in line:
-                x = line.index("^")
-                y = i - 1
-                dir = "^"
-                last = line.index("^")
+        if dir == "^":
+            y = y - 1
 
-                if y >= 0 and y < len(map) and x >= 0 and x < len(line):
-                    next = map[y][x]
-                    
-                    while next == "#":
-                        dir, x, y = rotate_dir(dir, x, y)
-                        next = map[y][x]
+        elif dir == ">":
+            x = x + 1
 
-            elif ">" in line:
-                x = line.index(">") + 1
-                y = i
-                dir = ">"
-                last = line.index(">")
+        elif dir == "v":
+            y = y + 1
 
-                if y >= 0 and y < len(map) and x >= 0 and x < len(line):
-                    next = map[y][x]
-                    
-                    while next == "#":
-                        dir, x, y = rotate_dir(dir, x, y)
-                        next = map[y][x]
+        elif dir == "<":
+            x = x - 1
 
+        if y >= 0 and y < len(map) and x >= 0 and x < len(line):
+            position = (last[0], last[1], dir)
 
-            elif "v" in line:
-                x = line.index("v")
-                y = i + 1
-                dir = "v"
-                last = line.index("v")
+            if position in visited:
+                return True
 
-                if y >= 0 and y < len(map) and x >= 0 and x < len(line):
-                    next = map[y][x]
-                    
-                    while next == "#":
-                        dir, x, y = rotate_dir(dir, x, y)
-                        next = map[y][x]
+            visited.add(position)
 
-            
-            elif "<" in line:
-                x = line.index("<") - 1
-                y = i
-                dir = "<"
-                last = line.index("<")
+            next = map[y][x]
+                
+            while next == "#" or next == "O":
+                dir, x, y = rotate_dir(dir, x, y)
+                next = map[y][x]
 
-                if y >= 0 and y < len(map) and x >= 0 and x < len(line):
-                    next = map[y][x]
-                    
-                    while next == "#":
-                        dir, x, y = rotate_dir(dir, x, y)
-                        next = map[y][x]
+        outside = move_guard(map, x, y, dir, last)
 
-            else:
-                continue
-
-            outside = move_guard(map, line, x, y, dir, last)
-            i += 1
+    return False
 
 
 def count(map):
     count = 0
+    positions = []
 
-    for line in map:
-        for char in line:
-            if char == "X":
+    for y in range(len(map)):
+        for x in range(len(map)):
+            if map[y][x] == "X":
+                positions.append((y, x))
                 count += 1
+
+    return count, positions
+
+
+def obstacles(spots):
+    count = 0
+    first_map = get_input()
+    # timer = 0
+    sx, sy = get_start(first_map)
+
+    base_map = [row.copy() for row in first_map]
+    spots = list(set(spots))
+
+
+    for spot in spots:
+        # print(timer)
+
+        map = [row.copy() for row in base_map]
+        y, x = spot
+
+        if (y, x) == (sy, sx):
+            continue
+
+        if map[y][x] == "#" or map[y][x] == "^":
+            continue
+
+        map[y][x] = "O"
+        loop = run_route(map)
+
+        if loop:
+            count += 1
+
+        # timer += 1
 
     return count
 
-if __name__ == "__main__":
+
+if __name__ == "__main__": 
     map = get_input()
     run_route(map)
+    num, path = count(map)
 
-    print(count(map))
+    print(f"Part 1: {num}")
+
+    print(f"Part 2: {obstacles(path)}")
